@@ -2,7 +2,7 @@
 
 # Dataset paths
 ROOT_DATA_PATH = "/Users/dahamnimnada/development/projects/FairBoTTDataset/"
-DATASET_CSV = ROOT_DATA_PATH + "fairbott_final_cleaned_dataset.csv"
+DATASET_CSV = ROOT_DATA_PATH + "fairbott_dataset_cleaned_for_training.csv"
 
 # Model paths
 MODEL_PATH = ROOT_DATA_PATH + "fairbott_bias_model_v1_detection.pth"

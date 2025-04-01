@@ -5,8 +5,8 @@ from sklearn.model_selection import train_test_split
 from fairbott.data.data_preperation import DataPreparation
 from fairbott.model.bias_detection_model import BiasDetectionModel
 from fairbott.configs.config import (
-    DATASET_CSV, MODEL_PATH, TRAIN_EMBEDDINGS_PATH, VAL_EMBEDDINGS_PATH, VAL_LABELS_PATH, TRAIN_LABELS_PATH)
-
+    DATASET_CSV, MODEL_PATH, TRAIN_EMBEDDINGS_PATH, VAL_EMBEDDINGS_PATH, VAL_LABELS_PATH, TRAIN_LABELS_PATH
+)
 
 def main():
     # Load and preprocess data
@@ -14,7 +14,6 @@ def main():
     data_prep = DataPreparation(DATASET_CSV, max_rows=100000)
     data_prep.load_data()
     data_prep.drop_missing_values()
-    data_prep.create_labels()
 
     # Initialize tokenizer
     tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
@@ -34,14 +33,14 @@ def main():
     print(f"Training set size: {len(train_labels)}")
     print(f"Validation set size: {len(val_labels)}")
 
-    # Optionally save the embeddings and labels
+    # Save the embeddings and labels
     torch.save({'input_ids': train_input_ids, 'attention_mask': train_attention_mask}, TRAIN_EMBEDDINGS_PATH)
     torch.save({'input_ids': val_input_ids, 'attention_mask': val_attention_mask}, VAL_EMBEDDINGS_PATH)
     torch.save(train_labels, TRAIN_LABELS_PATH)
     torch.save(val_labels, VAL_LABELS_PATH)
 
-    # Initialize BiasDetectionModel
-    bias_model = BiasDetectionModel(num_labels=19)
+    # Initialize model for binary classification
+    bias_model = BiasDetectionModel(num_labels=2)
 
     print(f"Unique labels in training set: {set(train_labels)}")
 
@@ -57,7 +56,6 @@ def main():
     bias_model.save_model(path=MODEL_PATH)
 
     print("Training complete. Model and embeddings saved.")
-
 
 if __name__ == '__main__':
     main()

@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 
 from fairbott.model.bias_detection_model import BiasDetectionModel
 from fairbott.configs.config import MODEL_PATH, VAL_EMBEDDINGS_PATH, VAL_LABELS_PATH
-from fairbott.data.keywords.bias_keywords import BIAS_CATEGORIES
 
 class Evaluation:
     def __init__(self, model, val_embeddings, val_labels):
@@ -28,9 +27,9 @@ class Evaluation:
                 predictions.append(prediction)
 
         accuracy = accuracy_score(self.val_labels, predictions)
-        precision = precision_score(self.val_labels, predictions, average='weighted', zero_division=0)
-        recall = recall_score(self.val_labels, predictions, average='weighted', zero_division=0)
-        f1 = f1_score(self.val_labels, predictions, average='weighted', zero_division=0)
+        precision = precision_score(self.val_labels, predictions, zero_division=0)
+        recall = recall_score(self.val_labels, predictions, zero_division=0)
+        f1 = f1_score(self.val_labels, predictions, zero_division=0)
 
         print(f"Accuracy: {accuracy:.4f}")
         print(f"Precision: {precision:.4f}")
@@ -41,24 +40,21 @@ class Evaluation:
 
     def plot_confusion_matrix(self, predictions):
         cm = confusion_matrix(self.val_labels, predictions)
-        plt.figure(figsize=(14, 10))
-        sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", xticklabels=BIAS_CATEGORIES, yticklabels=BIAS_CATEGORIES)
+        plt.figure(figsize=(6, 5))
+        sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", xticklabels=["Neutral", "Biased"], yticklabels=["Neutral", "Biased"])
         plt.xlabel("Predicted Label")
         plt.ylabel("True Label")
-        plt.title("Confusion Matrix - Bias Type Classification")
-        plt.xticks(rotation=45)
-        plt.yticks(rotation=45)
+        plt.title("Confusion Matrix - Binary Bias Classification")
         plt.tight_layout()
         plt.show()
 
-
 def evaluate_model():
     # Load model
-    model = BiasDetectionModel(num_labels=19)
+    model = BiasDetectionModel(num_labels=2)
     model.load_state_dict(torch.load(MODEL_PATH))
     model.eval()
 
-    # Load embeddings and labels
+    # Load validation data
     val_embeddings = torch.load(VAL_EMBEDDINGS_PATH)
     val_labels = torch.load(VAL_LABELS_PATH)
 
@@ -66,7 +62,6 @@ def evaluate_model():
     evaluator = Evaluation(model, val_embeddings, val_labels)
     predictions = evaluator.calculate_metrics()
     evaluator.plot_confusion_matrix(predictions)
-
 
 if __name__ == '__main__':
     evaluate_model()

@@ -66,3 +66,10 @@ BIAS_CATEGORIES = {
         "argentinian", "south african", "pakistani", "australian", "thai", "vietnamese"
     ]
 }
+
+BIAS_TYPES = [
+    "ability", "body_type", "characteristics", "cultural", "disabled", "gender",
+    "nationality", "neutral", "political_ideologies", "profession", "race",
+    "race_ethnicity", "religion", "social", "socioeconomic_class", "unknown",
+    "victim", "bias_general", "other"
+]

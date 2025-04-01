@@ -8,9 +8,8 @@ import time
 
 class BiasDetectionModel(nn.Module):
 
-    def __init__(self, num_labels=19):
+    def __init__(self, num_labels=2):  # binary classification
         super(BiasDetectionModel, self).__init__()
-        # Load pre-trained BERT for sequence classification
         self.model = BertForSequenceClassification.from_pretrained(
             'bert-base-uncased',
             num_labels=num_labels
@@ -29,9 +28,9 @@ class BiasDetectionModel(nn.Module):
 
         optimizer = Adam(self.parameters(), lr=lr)
 
-        # Compute class weights to handle class imbalance
-        class_counts = torch.bincount(torch.tensor(train_labels), minlength=self.model.classifier.out_features)
-        class_counts[class_counts == 0] = 1  # Prevent division by zero
+        # Class weights to address imbalance
+        class_counts = torch.bincount(torch.tensor(train_labels), minlength=2)
+        class_counts[class_counts == 0] = 1
         class_weights = 1.0 / class_counts.float()
         class_weights = class_weights / class_weights.sum()
 

@@ -4,7 +4,8 @@ class TextPreprocessor:
     def __init__(self, model_name='bert-base-uncased'):
         self.tokenizer = BertTokenizer.from_pretrained(model_name)
 
-    def tokenize(self, texts, max_length=128):
+    def tokenize(self, texts, max_length=256):  # Increased max_length for richer samples
+        print(f"Tokenizing {len(texts)} records...")  # Optional log
         return self.tokenizer(
             texts,
             padding=True,
